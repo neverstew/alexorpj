@@ -29,3 +29,8 @@ To run the application, execute the following command in the root directory.
 env FLASK_APP=src/app.py flask run
 ```
 
+## Testing
+Run the test suite with
+```
+pytest src
+```
