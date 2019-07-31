@@ -10,8 +10,8 @@ app.config.from_object('config.Config')
 
 def get_twitter_client():
     auth = tweepy.AppAuthHandler(
-            os.getenv('TWITTER_CONSUMER_TOKEN'),
-            os.getenv('TWITTER_CONSUMER_SECRET')
+            app.config['TWITTER_CONSUMER_TOKEN'],
+            app.config['TWITTER_CONSUMER_SECRET']
     ) 
     return tweepy.API(auth)
 

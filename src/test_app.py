@@ -27,12 +27,10 @@ def test_should_redirect_compare_when_no_user_id(client):
 @patch('tweepy.API')
 @patch('tweepy.AppAuthHandler')
 def test_should_setup_twitter_api(mock_auth, mock_api):
-    env = {
-            'TWITTER_CONSUMER_TOKEN': 'test_token',
-            'TWITTER_CONSUMER_SECRET': 'test_secret'
-    }
-    with patch.dict('os.environ', env):
-        twitter = app.get_twitter_client()
+    app.app.config['TWITTER_CONSUMER_TOKEN'] = 'test_token'
+    app.app.config['TWITTER_CONSUMER_SECRET'] = 'test_secret'
+
+    twitter = app.get_twitter_client()
         
     mock_auth.assert_called_once_with('test_token', 'test_secret')
     mock_api.assert_called_once_with(mock_auth())
