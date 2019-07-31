@@ -34,3 +34,22 @@ def test_should_setup_twitter_api(mock_auth, mock_api):
         
     mock_auth.assert_called_once_with('test_token', 'test_secret')
     mock_api.assert_called_once_with(mock_auth())
+
+@patch('app.get_twitter_client')
+@patch('tweepy.Cursor')
+def test_should_return_comparison_results(mock_cursor, mock_twitter, client):
+    class StubTweet(object):
+        def __init__(self, text):
+            self.text = text
+    
+    mock_twitter.return_value.user_timeline = 'test thing'
+    
+    mock_cursor.return_value.items.side_effect = [
+            [StubTweet('first alex'), StubTweet('second alex')],
+            [StubTweet('first pj'), StubTweet('second pj')],
+            [StubTweet('first bigboii'), StubTweet('second pj')]
+    ]
+    
+    res = client.get('/compare?user_id=bigboii')
+    assert 3 == mock_cursor.call_count
+    assert b"You&#39;re a PJ!" in res.data 
