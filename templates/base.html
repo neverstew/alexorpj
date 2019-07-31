@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Are you an Alex or a PJ?  Find out here." />
+	<meta name="author" content="matt-l-w" />
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
+	<title>Alex Or PJ?</title>
+</head>
+<body>
+	<header>{% block header %}{% endblock %}</header>
+	<main>
+		{% with messages = get_flashed_messages() %}
+  		{% if messages %}
+    			<ul class=flashes>
+    			{% for message in messages %}
+      				<li>{{ message }}</li>
+    			{% endfor %}
+    			</ul>
+  		{% endif %}
+  		{% endwith %}
+		{% block content %}{% endblock %}
+	</main>
+	<footer>{% block footer %}{% endblock %}</footer>
+</body>
+</html>

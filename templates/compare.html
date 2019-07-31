@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block header %}
+	<h1>@{{ handle }}</h1>
+{% endblock %}
+{% block content %}
+	<section id="results">
+		<h2>{{ result }}</h2>
+		<ul class="comparisons">
+			<li class="comparison--alex">
+				<span>You were {{ result_alex }}% similar to Alex.</span>
+			</li>
+			<li class="comparison--pj">
+				<span>You were {{ result_pj }}% similar to PJ.</span>
+			</li>
+		</ul>
+	</section>
+{% endblock %}
