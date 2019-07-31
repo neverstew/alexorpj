@@ -8,14 +8,13 @@ import tweepy
 app = Flask(__name__)
 app.config.from_object('config.Config')
 
+# TODO: Move this to service with singleton API object
 def get_twitter_client():
     auth = tweepy.AppAuthHandler(
             app.config['TWITTER_CONSUMER_TOKEN'],
             app.config['TWITTER_CONSUMER_SECRET']
     ) 
     return tweepy.API(auth)
-
-twitter = get_twitter_client()
 
 @app.route('/')
 def index():
@@ -30,6 +29,8 @@ def compare():
     user_id = request.args['user_id']
     
     # TODO: reject when too many requests
+
+    twitter = get_twitter_client()
 
     print('Getting tweets for Alex...')
     alex_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='agoldmund').items(app.config['NUM_TWEETS'])])
