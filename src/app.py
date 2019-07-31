@@ -7,11 +7,15 @@ import tweepy
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-auth = tweepy.AppAuthHandler(
-        os.getenv('TWITTER_CONSUMER_TOKEN'),
-        os.getenv('TWITTER_CONSUMER_SECRET')
-) 
-twitter = tweepy.API(auth)
+
+def get_twitter_client():
+    auth = tweepy.AppAuthHandler(
+            os.getenv('TWITTER_CONSUMER_TOKEN'),
+            os.getenv('TWITTER_CONSUMER_SECRET')
+    ) 
+    return tweepy.API(auth)
+
+twitter = get_twitter_client()
 
 @app.route('/')
 def index():
@@ -28,11 +32,11 @@ def compare():
     # TODO: reject when too many requests
 
     print('Getting tweets for Alex...')
-    alex_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='agoldmund').items(500)])
+    alex_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='agoldmund').items(app.config['NUM_TWEETS'])])
     print('Getting tweets for PJ...')
-    pj_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='pjvogt').items(500)])
+    pj_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='pjvogt').items(app.config['NUM_TWEETS'])])
     print(f"Getting tweets for {user_id}...")
-    user_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(500)])
+    user_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(app.config['NUM_TWEETS'])])
 
     tfidf = TfidfVectorizer().fit_transform([alex_tweets, pj_tweets, user_tweets])
     similarity = tfidf * tfidf.T
