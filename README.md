@@ -26,7 +26,7 @@ TWITTER_CONSUMER_SECRET=<secret> #from the twitter app
 To run the application, execute the following command in the root directory.
 
 ```
-env FLASK_APP=src/app.py flask run
+gunicorn --pythonpath src app:app --reload
 ```
 
 ## Testing
