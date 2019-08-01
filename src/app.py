@@ -58,4 +58,6 @@ def compare():
  
 def concat_tweets(tweets):
     import functools
+    if not tweets:
+        return ""
     return functools.reduce(lambda a,b: f"{a} {b}", tweets)

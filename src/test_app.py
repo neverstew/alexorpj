@@ -59,3 +59,9 @@ def test_should_reduce_tweet_list():
     expected = "First Second with more words Third! £%*^( 4"
 
     assert expected == app.concat_tweets(actual)
+
+def test_should_reduce_empty_tweet_list_to_empty_string():
+    actual = []
+    expected = ""
+
+    assert expected == app.concat_tweets(actual)
