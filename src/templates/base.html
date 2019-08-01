@@ -6,10 +6,11 @@
 	<meta name="author" content="matt-l-w" />
 	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
 	<title>Alex Or PJ?</title>
+	<link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css"/>
 </head>
-<body>
+<body class="pa4 flex flex-column items-center" style="height:100vh;">
 	<header>{% block header %}{% endblock %}</header>
-	<main>
+	<main class="flex flex-column w-70-ns items-center">
 		{% with messages = get_flashed_messages() %}
   		{% if messages %}
     			<ul class=flashes>

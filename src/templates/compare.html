@@ -3,10 +3,10 @@
 	<h1>@{{ handle }}</h1>
 {% endblock %}
 {% block content %}
-	<section id="results">
-		<h2>{{ result }}</h2>
-		<ul class="comparisons">
-			<li class="comparison--alex">
+	<section id="results" class="flex flex-column items-center">
+		<h2 class="ma5">{{ result }}</h2>
+		<ul class="comparisons list pl0">
+			<li class="comparison--alex mb3">
 				<span>You were {{ result_alex }}% similar to Alex.</span>
 			</li>
 			<li class="comparison--pj">

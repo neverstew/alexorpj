@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
-{% block header %}<h1>Alex or PJ?</h1>{% endblock %}
+{% block header %}<h1 class="f-headline f1 lh-solid tc avenir measure">Alex or PJ?</h1>{% endblock %}
 {% block content %}
-	<p>
+	<p class="f3-ns f4 measure-narrow">
 		Listeners of Reply All will be familiar with the ever-pressing question "Are you a PJ, or are you an Alex?".
 		In true Reply All fashion, this website is here to help.
 	</p>
-	<form method="get" action="/compare">
-    		<label for="user_id">Twitter handle</label>
-    		<input name="user_id" id="user_id" required>
-    		<input type="submit" value="Go">
+	<p class="measure mt5">
+		Enter your twitter handle below to see who you're most like.
+	</p>
+	<form method="get" action="/compare" class="mt5 w-100 flex flex-wrap justify-center">
+    		<label for="user_id" class="dn">Twitter handle</label>
+    		<input name="user_id" id="user_id" placeholder="twitter handle" required class="ma2 pa3 ba bw1 br3">
+    		<input type="submit" value="Go" class="input-reset bg-green white ma2 pa3 ph5 ph4-l ba bw1 br-pill pointer">
   	</form>
 {% endblock %}
