@@ -54,6 +54,11 @@ def test_should_return_comparison_results(mock_cursor, mock_twitter, client):
     assert 3 == mock_cursor.call_count
     assert b"You&#39;re a PJ!" in res.data 
 
+    # ensure comparison from in response page
+    assert b'form' in res.data
+    assert b'action="/compare"' in res.data
+    assert b'placeholder="twitter handle"' in res.data
+
 def test_should_reduce_tweet_list():
     actual = ["First", "Second with more words", "Third! £%*^(", "4"]
     expected = "First Second with more words Third! £%*^( 4"

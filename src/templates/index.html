@@ -8,9 +8,5 @@
 	<p class="measure mt5">
 		Enter your twitter handle below to see who you're most like.
 	</p>
-	<form method="get" action="/compare" class="mt5 w-100 flex flex-wrap justify-center">
-    		<label for="user_id" class="dn">Twitter handle</label>
-    		<input name="user_id" id="user_id" placeholder="twitter handle" required class="ma2 pa3 ba bw1 br3">
-    		<input type="submit" value="Go" class="input-reset bg-green white ma2 pa3 ph5 ph4-l ba bw1 br-pill pointer">
-  	</form>
+	{% include '_form.html' %}
 {% endblock %}
