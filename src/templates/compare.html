@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block header %}
-	<h1>@{{ handle }}</h1>
+	<h1 class="avenir">@{{ handle }}</h1>
 {% endblock %}
 {% block content %}
 	<section id="results" class="flex flex-column items-center">
-		<h2 class="ma5">{{ result }}</h2>
+		<h2 class="ma5 avenir">{{ result }}</h2>
 		<ul class="comparisons list pl0">
 			<li class="comparison--alex mb3">
-				<span class="athelas">You were {{ result_alex }}% similar to Alex.</span>
+				<span class="avenir">You were {{ result_alex }}% similar to Alex.</span>
 			</li>
 			<li class="comparison--pj">
-				<span class="athelas">You were {{ result_pj }}% similar to PJ.</span>
+				<span class="avenir">You were {{ result_pj }}% similar to PJ.</span>
 			</li>
 		</ul>
 	</section>
