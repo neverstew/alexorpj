@@ -1,12 +1,28 @@
-from flask import flash, Flask, redirect, render_template, request, url_for
+from flask import g, flash, Flask, redirect, render_template, request, url_for
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import functools
 import os
+import sqlite3
 import tweepy 
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(
+           'dev.db', 
+           detect_types=sqlite3.PARSE_DECLTYPES
+        )
+        g.db.row_factory = sqlite3.Row
+    return g.db
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
 
 # TODO: Move this to service with singleton API object
 def get_twitter_client():
@@ -61,3 +77,14 @@ def concat_tweets(tweets):
     if not tweets:
         return ""
     return functools.reduce(lambda a,b: f"{a} {b}", tweets)
+
+
+"""
+CLI commands below...
+"""
+
+@app.cli.command("init-db")
+def init_db():
+    db = get_db()
+    print(db.execute("SELECT * FROM users;"))
+    db.close()
