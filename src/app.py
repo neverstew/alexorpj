@@ -1,6 +1,7 @@
 from flask import flash, Flask, redirect, render_template, request, url_for
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import datetime
 import functools
 import os
 import tweepy 
@@ -56,6 +57,13 @@ def concat_tweets(tweets):
     if not tweets:
         return ""
     return functools.reduce(lambda a,b: f"{a} {b}", tweets)
+
+last_fetched = {}
+fetched_tweets = {}
+
+def recently_fetched(user_id):
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    return user_id in last_fetched and last_fetched[user_id] > yesterday 
 
 def get_tweets(user_id):
     print(f"Getting tweets for {user_id}...")

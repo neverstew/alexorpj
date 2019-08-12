@@ -1,6 +1,8 @@
+from freezegun import freeze_time
 from unittest.mock import patch
 
 import app
+import datetime
 import pytest
 
 
@@ -70,3 +72,13 @@ def test_should_reduce_empty_tweet_list_to_empty_string():
     expected = ""
 
     assert expected == app.concat_tweets(actual)
+
+def test_recently_fetched():
+    # should return false when not fetched before
+    assert not app.recently_fetched('tester')
+    # should return true when fetched in last day
+    app.last_fetched['tester'] = datetime.datetime(year=2019, month=9, day=12)
+    assert app.recently_fetched('tester')
+    # should return false when fetched over a day ago
+    with freeze_time('2019-9-14'):
+        assert not app.recently_fetched('tester')
