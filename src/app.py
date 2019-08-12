@@ -66,6 +66,15 @@ def recently_fetched(user_id):
     return user_id in last_fetched and last_fetched[user_id] > yesterday 
 
 def get_tweets(user_id):
-    print(f"Getting tweets for {user_id}...")
-    twitter = get_twitter_client()
-    return concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(app.config['NUM_TWEETS'])])
+    if recently_fetched(user_id) and user_id in fetched_tweets:
+        return fetched_tweets[user_id]
+    else:
+        print(f"Getting tweets for {user_id}...")
+        twitter = get_twitter_client()
+        tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(app.config['NUM_TWEETS'])])
+
+        if user_id in ('agoldmund', 'pjvogt'):
+            last_fetched[user_id] = datetime.datetime.now()
+            fetched_tweets[user_id] = tweets
+
+        return tweets

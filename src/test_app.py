@@ -47,19 +47,48 @@ def test_should_return_comparison_results(mock_cursor, mock_twitter, client):
     mock_twitter.return_value.user_timeline = 'test thing'
     
     mock_cursor.return_value.items.side_effect = [
+            # first time called
             [StubTweet('first alex'), StubTweet('second alex')],
             [StubTweet('first pj'), StubTweet('second pj')],
+            [StubTweet('first bigboii'), StubTweet('second pj')],
+            # second time alex and pj cached
+            [StubTweet('first bigboii'), StubTweet('second pj')],
+            # third time called again
+            [StubTweet('third alex'), StubTweet('fourth alex')],
+            [StubTweet('third pj'), StubTweet('fourth pj')],
             [StubTweet('first bigboii'), StubTweet('second pj')]
     ]
     
-    res = client.get('/compare?user_id=bigboii')
-    assert 3 == mock_cursor.call_count
-    assert b"You&#39;re a PJ!" in res.data 
+    with freeze_time('2019-9-12'):
+        res = client.get('/compare?user_id=bigboii')
+        assert 3 == mock_cursor.call_count
+        assert b"You&#39;re a PJ!" in res.data 
 
-    # ensure comparison from in response page
-    assert b'form' in res.data
-    assert b'action="/compare"' in res.data
-    assert b'placeholder="twitter handle"' in res.data
+        # ensure comparison form in response page
+        assert b'form' in res.data
+        assert b'action="/compare"' in res.data
+        assert b'placeholder="twitter handle"' in res.data
+
+        assert 'agoldmund' in app.fetched_tweets
+        assert app.fetched_tweets['agoldmund'] == 'first alex second alex'
+        assert app.last_fetched['agoldmund'] == datetime.datetime(2019,9,12)
+        assert 'pjvogt' in app.fetched_tweets
+        assert app.fetched_tweets['pjvogt'] == 'first pj second pj'
+        assert app.last_fetched['pjvogt'] == datetime.datetime(2019,9,12)
+        assert 'bigboii' not in app.fetched_tweets
+
+        res = client.get('/compare?user_id=bigboii')
+        # results for alex and pj should have cached since we just grabbed 
+        # the tweets for this user
+        assert 4 == mock_cursor.call_count
+
+    with freeze_time('2019-9-14'):
+        res = client.get('/compare?user_id=bigboii')
+        # cache out of time so should be called again
+        assert 7 == mock_cursor.call_count
+        assert app.fetched_tweets['agoldmund'] == 'third alex fourth alex'
+        assert app.last_fetched['agoldmund'] == datetime.datetime(2019,9,14)
+
 
 def test_should_reduce_tweet_list():
     actual = ["First", "Second with more words", "Third! £%*^(", "4"]
