@@ -1,6 +1,7 @@
 from flask import flash, Flask, redirect, render_template, request, url_for
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+import datetime
 import functools
 import os
 import tweepy 
@@ -30,14 +31,9 @@ def compare():
     
     # TODO: reject when too many requests
 
-    twitter = get_twitter_client()
-
-    print('Getting tweets for Alex...')
-    alex_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='agoldmund').items(app.config['NUM_TWEETS'])])
-    print('Getting tweets for PJ...')
-    pj_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id='pjvogt').items(app.config['NUM_TWEETS'])])
-    print(f"Getting tweets for {user_id}...")
-    user_tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(app.config['NUM_TWEETS'])])
+    alex_tweets = get_tweets('agoldmund')
+    pj_tweets = get_tweets('pjvogt')
+    user_tweets = get_tweets(user_id)
 
     tfidf = TfidfVectorizer().fit_transform([alex_tweets, pj_tweets, user_tweets])
     similarity = tfidf * tfidf.T
@@ -61,3 +57,26 @@ def concat_tweets(tweets):
     if not tweets:
         return ""
     return functools.reduce(lambda a,b: f"{a} {b}", tweets)
+
+last_fetched = {}
+fetched_tweets = {}
+
+def recently_fetched(user_id):
+    yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
+    return user_id in last_fetched and last_fetched[user_id] > yesterday 
+
+def get_tweets(user_id):
+    if recently_fetched(user_id) and user_id in fetched_tweets:
+        app.logger.info(f"Returning previously fetched tweets for {user_id}.  Previously fetched at {last_fetched[user_id]}.")
+        return fetched_tweets[user_id]
+    else:
+        app.logger.info(f"Getting tweets for {user_id}...")
+        twitter = get_twitter_client()
+        tweets = concat_tweets([tweet.text for tweet in tweepy.Cursor(twitter.user_timeline, id=user_id).items(app.config['NUM_TWEETS'])])
+        app.logger.debug(f"Retrieved tweets for {user_id}\n{tweets}")
+
+        if user_id in ('agoldmund', 'pjvogt'):
+            last_fetched[user_id] = datetime.datetime.now()
+            fetched_tweets[user_id] = tweets
+
+        return tweets
